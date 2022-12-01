@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @Component
@@ -22,6 +23,17 @@ public class MoviesInfoRestClient {
                 .uri(url, movieId)
                 .retrieve()
                 .bodyToMono(MovieInfo.class)
+                .log()
+                ;
+    }
+
+    public Flux<MovieInfo> retrieveMovieInfoStream() {
+        String url = new StringBuilder(moviesInfoUrl).append("/stream").toString();
+        return webClient
+                .get()
+                .uri(url)
+                .retrieve()
+                .bodyToFlux(MovieInfo.class)
                 .log()
                 ;
     }
